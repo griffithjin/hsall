@@ -17,6 +17,7 @@ const menuItems = [
   { key: '/admin/api-keys', icon: <KeyOutlined />, label: 'Key管理' },
   { key: '/admin/channels', icon: <TeamOutlined />, label: '渠道管理' },
   { key: '/admin/usage', icon: <BarChartOutlined />, label: '用量监控' },
+  { key: '/admin/settings', icon: <SettingOutlined />, label: '系统配置' },
 ];
 
 const AdminLayout: React.FC = () => {

@@ -23,6 +23,7 @@ import AdminUsers from './pages/admin/Users';
 import AdminOrders from './pages/admin/Orders';
 import AdminApiKeys from './pages/admin/ApiKeys';
 import AdminChannels from './pages/admin/Channels';
+import SystemConfig from './pages/admin/SystemConfig';
 import ChannelDashboard from './pages/ChannelDashboard';
 import ChatPlayground from './pages/ChatPlayground';
 
