@@ -3,6 +3,10 @@ import { Routes, Route } from 'react-router-dom';
 import { Layout } from 'antd';
 
 // C端页面
+import HomePageEN from './pages/HomePageEN';
+import PackageListPageEN from './pages/PackageListPageEN';
+import LoginPageEN from './pages/LoginPageEN';
+import ModelSelectorEN from './pages/ModelSelectorEN';
 import HomePage from './pages/HomePage';
 import PackageListPage from './pages/PackageListPage';
 import PackageDetailPage from './pages/PackageDetailPage';
@@ -17,6 +21,7 @@ import LoginPage from './pages/LoginPage';
 
 // 管理后台
 import AdminLayout from './pages/admin/AdminLayout';
+import AdminLayoutEN from './pages/admin/AdminLayoutEN';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminPackages from './pages/admin/Packages';
 import AdminUsers from './pages/admin/Users';
@@ -60,6 +65,30 @@ function App() {
           <Route path="api-keys" element={<AdminApiKeys />} />
           <Route path="channels" element={<AdminChannels />} />
           <Route path="settings" element={<SystemConfig />} />
+        </Route>
+        {/* English Version */}
+        <Route path='/en' element={<HomePageEN />} />
+        <Route path='/en/packages' element={<PackageListPageEN />} />
+        <Route path='/en/models' element={<ModelSelectorEN />} />
+        <Route path='/en/login' element={<LoginPageEN />} />
+        
+        {/* English User Center (reuses Chinese components) */}
+        <Route path='/en/user' element={<UserLayout />}>
+          <Route index element={<UserDashboard />} />
+          <Route path='keys' element={<UserKeys />} />
+          <Route path='orders' element={<UserOrders />} />
+          <Route path='usage' element={<UserUsage />} />
+        </Route>
+        
+        {/* English Admin (simplified) */}
+        <Route path='/en/admin' element={<AdminLayoutEN />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path='packages' element={<AdminPackages />} />
+          <Route path='users' element={<AdminUsers />} />
+          <Route path='orders' element={<AdminOrders />} />
+          <Route path='api-keys' element={<AdminApiKeys />} />
+          <Route path='channels' element={<AdminChannels />} />
+          <Route path='settings' element={<SystemConfig />} />
         </Route>
       </Routes>
     </Layout>

@@ -35,7 +35,7 @@ const AdminUsers: React.FC = () => {
   };
 
   const columns = [
-    { title: 'ID', dataIndex: 'id', width: 80, responsive: ['md'] as any },
+    { title: 'ID', dataIndex: 'id', width: 80, },
     { 
       title: '用户信息', 
       render: (record: any) => (
@@ -50,9 +50,9 @@ const AdminUsers: React.FC = () => {
     },
     { title: '角色', dataIndex: 'role', render: (v: string) => <Tag color={roleMap[v]?.color}>{roleMap[v]?.text || v}</Tag> },
     { title: '状态', dataIndex: 'status', render: (v: string) => <Badge status={v === 'active' ? 'success' : 'error'} text={statusMap[v]?.text || v} /> },
-    { title: '余额', dataIndex: 'balance', render: (v: number) => `¥${v.toFixed(2)}`, responsive: ['md'] as any },
-    { title: '订单数', dataIndex: 'orders', responsive: ['md'] as any },
-    { title: '注册时间', dataIndex: 'createdAt', responsive: ['lg'] as any },
+    { title: '余额', dataIndex: 'balance', render: (v: number) => `¥${v.toFixed(2)}`, },
+    { title: '订单数', dataIndex: 'orders', },
+    { title: '注册时间', dataIndex: 'createdAt', },
     {
       title: '操作',
       render: (_: any, record: any) => (

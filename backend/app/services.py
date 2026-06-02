@@ -1,5 +1,4 @@
-"""
-核心服务层
+"""n核心服务层（整合版）n"""
 """
 import uuid
 import hmac
@@ -24,7 +23,14 @@ from app.schemas import (
     CreateChannelRequest, RefundRequest
 )
 
+# ========== 子模块导入（新功能） ==========
+from app.services.billing_engine import BillingEngine
+from app.services.model_router_client import get_model_router_client, ModelRouterClient
+from app.services.alipay_service import get_alipay_service, AlipayService
+from app.services.sms_service import get_sms_service, SMSService
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 
 # ==================== 认证服务 ====================
@@ -249,63 +255,46 @@ class ApiKeyService:
 # ==================== ModelRouter 服务 ====================
 
 class ModelRouterService:
-    """阿里云ModelRouter对接服务"""
+    """阿里云ModelRouter对接服务 - 代理到独立模块"""
     
     def __init__(self, db: AsyncSession):
         self.db = db
+        self.client = get_model_router_client()
     
     async def create_key(self, client_id: int, name: str, quota: Decimal,
                          models: List[str]) -> Dict[str, Any]:
-        """
-        调用ModelRouter创建API Key
-        POST /api/v1/modelRouter/open/clients/{client_id}/keys
-        """
-        # 这里实现实际的HTTP调用
-        # 使用httpx调用阿里云API
-        # 需要实现阿里云签名算法
-        
-        # 模拟返回
-        return {
-            "key_id": f"mr-{secrets.token_hex(8)}",
-            "key_secret": secrets.token_urlsafe(32),
-            "client_id": client_id,
-            "balance": float(quota),
-            "status": "active"
-        }
+        """调用ModelRouter创建API Key"""
+        return await self.client.create_key(client_id, name, quota, models)
     
     async def create_balance_transaction(self, client_id: int, 
                                          transaction_type: str, 
                                          amount: Decimal,
                                          remark: str) -> Dict[str, Any]:
-        """
-        调用ModelRouter创建余额交易（充值）
-        POST /api/v1/modelRouter/open/clients/{client_id}/balance/transactions
-        """
-        # 实际HTTP调用
-        return {
-            "requestId": str(uuid.uuid4()),
-            "success": True,
-            "data": {
-                "id": 1,
-                "clientId": client_id,
-                "balance": float(amount),
-                "balanceType": "amount",
-                "enableBalance": True
-            }
-        }
+        """调用ModelRouter创建余额交易（充值）"""
+        return await self.client.create_balance_transaction(
+            client_id, transaction_type, amount, remark
+        )
     
-    async def get_key_usage(self, key_id: str, start_date: str, 
-                           end_date: str) -> Dict[str, Any]:
+    async def get_key_usage(self, client_id: int, key_id: str,
+                           start_date: str, end_date: str) -> Dict[str, Any]:
         """查询Key用量"""
-        return {
-            "total_requests": 0,
-            "total_tokens": 0,
-            "total_cost": 0.0
-        }
+        return await self.client.get_key_usage(client_id, key_id, start_date, end_date)
     
-    async def get_key_balance(self, key_id: str) -> Decimal:
+    async def get_key_balance(self, client_id: int, key_id: str) -> Optional[Decimal]:
         """查询Key余额"""
-        return Decimal("0")
+        return await self.client.get_key_balance(client_id, key_id)
+    
+    async def get_key_detail(self, client_id: int, key_id: str) -> Optional[Dict[str, Any]]:
+        """查询Key详情"""
+        return await self.client.get_key_detail(client_id, key_id)
+    
+    async def update_key_status(self, client_id: int, key_id: str, status: str) -> bool:
+        """更新Key状态"""
+        return await self.client.update_key_status(client_id, key_id, status)
+    
+    async def proxy_chat_completion(self, client_id: int, key_id: str, payload: Dict[str, Any]):
+        """代理转发聊天补全请求"""
+        return await self.client.proxy_chat_completion(client_id, key_id, payload)
 
 
 # ==================== 计费服务 ====================

@@ -593,6 +593,47 @@ const SystemConfigPage: React.FC = () => {
               />
             </Card>
           </TabPane>
+          <TabPane tab="📋 公司信息" key="company">
+            <Card title="Company Info & Legal Pages">
+              <Alert message="法务部填写" description="请公司法务团队填写以下法律文档内容。" type="warning" showIcon style={{ marginBottom: 16 }} />
+              <Form.Item name="privacy_policy" label="隐私政策 (Privacy Policy)"><Input.TextArea rows={8} placeholder="在此粘贴隐私政策完整内容..." /></Form.Item>
+              <Form.Item name="terms_of_service" label="服务条款 (Terms of Service)"><Input.TextArea rows={8} placeholder="在此粘贴服务条款完整内容..." /></Form.Item>
+              <Form.Item name="contact_info" label="联系我们 (Contact Us)"><Input.TextArea rows={6} placeholder="公司地址、电话、邮箱..." /></Form.Item>
+              <Form.Item name="company_name" label="公司注册名"><Input placeholder="目前科技 / HSALL GLOBAL AI COMPUTE LIMITED" /></Form.Item>
+              <Form.Item name="company_address" label="注册地址"><Input placeholder="公司注册地址" /></Form.Item>
+              <Form.Item name="business_license" label="营业执照号"><Input placeholder="统一社会信用代码" /></Form.Item>
+            </Card>
+          </TabPane>
+
+          <TabPane tab="💳 支付渠道" key="payments">
+            <Card title="Payment Channels">
+              <Alert message="支付渠道扩展" description="配置完成后，用户可选择相应支付方式。" type="info" showIcon style={{ marginBottom: 16 }} />
+              <Divider>国内支付</Divider>
+              <Form.Item name="alipay_enabled" valuePropName="checked" label="支付宝"><Switch checkedChildren="启用" unCheckedChildren="关闭" /></Form.Item>
+              <Form.Item name="wechat_pay_enabled" valuePropName="checked" label="微信支付"><Switch checkedChildren="启用" unCheckedChildren="关闭" /></Form.Item>
+              <Form.Item name="unionpay_enabled" valuePropName="checked" label="银联支付"><Switch checkedChildren="启用" unCheckedChildren="关闭" /></Form.Item>
+              <Divider>海外支付</Divider>
+              <Form.Item name="paypal_enabled" valuePropName="checked" label="PayPal"><Switch checkedChildren="启用" unCheckedChildren="关闭" /></Form.Item>
+              <Form.Item name="stripe_enabled" valuePropName="checked" label="Stripe (Visa/Mastercard)"><Switch checkedChildren="启用" unCheckedChildren="关闭" /></Form.Item>
+              <Form.Item name="hsbc_enabled" valuePropName="checked" label="汇丰银行转账"><Switch checkedChildren="启用" unCheckedChildren="关闭" /></Form.Item>
+              <Form.Item name="hsbc_account" label="汇丰银行账户"><Input placeholder="HSBC Account Number" /></Form.Item>
+              <Form.Item name="stripe_publishable_key" label="Stripe Publishable Key"><Input placeholder="pk_live_..." /></Form.Item>
+              <Form.Item name="stripe_secret_key" label="Stripe Secret Key"><Input.Password placeholder="sk_live_..." /></Form.Item>
+              <Form.Item name="paypal_client_id" label="PayPal Client ID"><Input placeholder="PayPal Client ID" /></Form.Item>
+              <Form.Item name="paypal_secret" label="PayPal Secret"><Input.Password placeholder="PayPal Secret" /></Form.Item>
+            </Card>
+          </TabPane>
+
+          <TabPane tab="🔗 ModelTop" key="modeltop">
+            <Card title="ModelTop.ai Integration" extra={<Tag color="blue">海外API</Tag>}>
+              <Alert message="ModelTop.ai 对接" description="用于接入Seedance 2.0等海外专属模型。" type="info" showIcon style={{ marginBottom: 16 }} />
+              <Form.Item name="modeltop_enabled" valuePropName="checked" label="启用 ModelTop"><Switch checkedChildren="启用" unCheckedChildren="关闭" /></Form.Item>
+              <Form.Item name="modeltop_api_key" label="API Key" rules={[{ required: true }]}><Input.Password placeholder="sk-..." /></Form.Item>
+              <Form.Item name="modeltop_base_url" label="Base URL"><Input placeholder="https://api.modeltop.ai/v1" /></Form.Item>
+              <Form.Item name="modeltop_models" label="支持模型"><Input placeholder="seedance-2.0, seedance-pro" /></Form.Item>
+              <Alert message="合规提醒" description="Seedance等海外模型仅限非中国区用户访问，系统会自动根据IP进行地域限制。" type="warning" showIcon />
+            </Card>
+          </TabPane>
         </Tabs>
       </Form>
 
