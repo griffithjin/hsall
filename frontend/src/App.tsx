@@ -1,0 +1,61 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { Layout } from 'antd';
+
+// C端页面
+import HomePage from './pages/HomePage';
+import PackageListPage from './pages/PackageListPage';
+import PackageDetailPage from './pages/PackageDetailPage';
+import PaymentPage from './pages/PaymentPage';
+import PaymentResultPage from './pages/PaymentResultPage';
+import UserLayout from './pages/user/UserLayout';
+import UserDashboard from './pages/user/Dashboard';
+import UserKeys from './pages/user/ApiKeys';
+import UserOrders from './pages/user/Orders';
+import UserUsage from './pages/user/Usage';
+import LoginPage from './pages/LoginPage';
+
+// 管理后台
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/Dashboard';
+import AdminPackages from './pages/admin/Packages';
+import AdminUsers from './pages/admin/Users';
+import AdminOrders from './pages/admin/Orders';
+import AdminApiKeys from './pages/admin/ApiKeys';
+import AdminChannels from './pages/admin/Channels';
+
+function App() {
+  return (
+    <Layout style={{ minHeight: '100vh' }}>
+      <Routes>
+        {/* C端路由 */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/packages" element={<PackageListPage />} />
+        <Route path="/packages/:uuid" element={<PackageDetailPage />} />
+        <Route path="/pay/:orderUuid" element={<PaymentPage />} />
+        <Route path="/pay/result" element={<PaymentResultPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        
+        {/* 用户中心 */}
+        <Route path="/user" element={<UserLayout />}>
+          <Route index element={<UserDashboard />} />
+          <Route path="keys" element={<UserKeys />} />
+          <Route path="orders" element={<UserOrders />} />
+          <Route path="usage" element={<UserUsage />} />
+        </Route>
+        
+        {/* 管理后台 */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="packages" element={<AdminPackages />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="api-keys" element={<AdminApiKeys />} />
+          <Route path="channels" element={<AdminChannels />} />
+        </Route>
+      </Routes>
+    </Layout>
+  );
+}
+
+export default App;
