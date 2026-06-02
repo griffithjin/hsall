@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Button, Tag, Space, Drawer, Descriptions, Modal, Form, Input, Select, Popconfirm, message, Card, Statistic, Row, Col, Tooltip, Badge } from 'antd';
-import { EyeOutlined, CopyOutlined, StopOutlined, CheckCircleOutlined, PlusOutlined, ReloadOutlined, KeyOutlined, DollarOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { EyeOutlined, CopyOutlined, StopOutlined, CheckCircleOutlined, PlusOutlined, ReloadOutlined, KeyOutlined, DollarOutlined, ThunderboltOutlined, SearchOutlined } from '@ant-design/icons';
 
 const AdminApiKeys: React.FC = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -51,7 +51,7 @@ const AdminApiKeys: React.FC = () => {
     {
       title: '操作',
       width: 160,
-      render: (_, record: any) => (
+      render: (_: any, record: any) => (
         <Space size="small">
           <Button size="small" icon={<EyeOutlined />} onClick={() => { setSelectedKey(record); setDrawerVisible(true); }}>详情</Button>
           <Tooltip title="复制Key">
@@ -96,12 +96,12 @@ const AdminApiKeys: React.FC = () => {
           </Col>
           <Col xs={12} sm={8} lg={6}>
             <Card size="small">
-              <Statistic title="总余额" value={totalBalance.toFixed(2)} prefix="¥" valueStyle={{ color: '#faad14' }} prefix={<DollarOutlined />} />
+              <Statistic title="总余额" value={totalBalance.toFixed(2)} prefix={<DollarOutlined />} valueStyle={{ color: '#faad14' }} />
             </Card>
           </Col>
           <Col xs={12} sm={8} lg={6}>
             <Card size="small">
-              <Statistic title="累计用量" value={totalUsage.toFixed(2)} prefix="¥" valueStyle={{ color: '#722ed1' }} prefix={<ThunderboltOutlined />} />
+              <Statistic title="累计用量" value={totalUsage.toFixed(2)} prefix={<ThunderboltOutlined />} valueStyle={{ color: '#722ed1' }} />
             </Card>
           </Col>
         </Row>

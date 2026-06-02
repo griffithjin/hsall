@@ -30,14 +30,14 @@ const UserApiKeys: React.FC = () => {
       </div>
     )},
     { title: '余额', dataIndex: 'balance', render: (v: number) => `¥${v.toFixed(2)}`, width: 100 },
-    { title: '套餐', dataIndex: 'package', responsive: ['md'] },
+    { title: '套餐', dataIndex: 'package', },
     { title: '状态', dataIndex: 'status', render: (v: string) => <Badge status={statusMap[v]?.badge as any} text={statusMap[v]?.text} /> },
-    { title: '有效期', dataIndex: 'expiresAt', responsive: ['lg'] },
-    { title: '今日用量', dataIndex: 'todayUsage', render: (v: number) => `¥${v.toFixed(2)}`, responsive: ['lg'] },
+    { title: '有效期', dataIndex: 'expiresAt', },
+    { title: '今日用量', dataIndex: 'todayUsage', render: (v: number) => `¥${v.toFixed(2)}`, },
     {
       title: '操作',
       width: 180,
-      render: (_, record: any) => (
+      render: (_: any, record: any) => (
         <Space size="small">
           <Tooltip title="复制Key">
             <Button size="small" icon={<CopyOutlined />} onClick={() => { message.success('Key已复制'); }} />
@@ -75,12 +75,12 @@ const UserApiKeys: React.FC = () => {
         </Col>
         <Col xs={12} sm={8}>
           <Card size="small">
-            <Statistic title="总余额" value={totalBalance.toFixed(2)} prefix="¥" valueStyle={{ color: '#faad14' }} prefix={<DollarOutlined />} />
+            <Statistic title="总余额" value={totalBalance.toFixed(2)} prefix={<DollarOutlined />} valueStyle={{ color: '#faad14' }} />
           </Card>
         </Col>
         <Col xs={12} sm={8}>
           <Card size="small">
-            <Statistic title="今日用量" value={totalUsage.toFixed(2)} prefix="¥" valueStyle={{ color: '#722ed1' }} prefix={<ThunderboltOutlined />} />
+            <Statistic title="今日用量" value={totalUsage.toFixed(2)} prefix={<ThunderboltOutlined />} valueStyle={{ color: '#722ed1' }} />
           </Card>
         </Col>
       </Row>

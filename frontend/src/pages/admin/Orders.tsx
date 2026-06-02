@@ -71,7 +71,7 @@ const AdminOrders: React.FC = () => {
       title: '操作',
       width: 120,
       fixed: 'right' as const,
-      render: (_, record: any) => (
+      render: (_: any, record: any) => (
         <Space size="small">
           <Button size="small" icon={<EyeOutlined />} onClick={() => { setSelectedOrder(record); setDrawerVisible(true); }}>详情</Button>
           {record.payStatus === 'paid' && record.status !== 'refunded' && (

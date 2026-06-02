@@ -80,7 +80,7 @@ const AdminChannels: React.FC = () => {
     {
       title: '操作',
       width: 180,
-      render: (_, record: any) => (
+      render: (_: any, record: any) => (
         <Space size="small">
           <Button size="small" icon={<EyeOutlined />} onClick={() => { setSelectedChannel(record); setDrawerVisible(true); }}>详情</Button>
           <Button size="small" icon={<EditOutlined />} onClick={() => { setSelectedChannel(record); setEditQuotaVisible(true); }}>调额</Button>
@@ -123,17 +123,17 @@ const AdminChannels: React.FC = () => {
           </Col>
           <Col xs={12} sm={8} lg={6}>
             <Card size="small">
-              <Statistic title="总分配额度" value={totalAllocated.toLocaleString()} prefix="¥" valueStyle={{ color: '#52c41a' }} prefix={<DollarOutlined />} />
+              <Statistic title="总分配额度" value={totalAllocated.toLocaleString()} prefix={<DollarOutlined />} valueStyle={{ color: '#52c41a' }} />
             </Card>
           </Col>
           <Col xs={12} sm={8} lg={6}>
             <Card size="small">
-              <Statistic title="已用额度" value={totalUsed.toLocaleString()} prefix="¥" valueStyle={{ color: '#faad14' }} prefix={<BarChartOutlined />} />
+              <Statistic title="已用额度" value={totalUsed.toLocaleString()} prefix={<BarChartOutlined />} valueStyle={{ color: '#faad14' }} />
             </Card>
           </Col>
           <Col xs={12} sm={8} lg={6}>
             <Card size="small">
-              <Statistic title="剩余额度" value={totalRemaining.toLocaleString()} prefix="¥" valueStyle={{ color: '#722ed1' }} prefix={<DollarOutlined />} />
+              <Statistic title="剩余额度" value={totalRemaining.toLocaleString()} prefix={<DollarOutlined />} valueStyle={{ color: '#722ed1' }} />
             </Card>
           </Col>
         </Row>

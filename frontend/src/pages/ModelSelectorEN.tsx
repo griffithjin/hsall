@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
-import { Card, Row, Col, Tag, Badge, Button, Tabs, List, Space, Alert, Typography, Divider, Tooltip, Steps, Select, message } from 'antd';
+import { Card, Row, Col, Tag, Badge, Button, Tabs, Space, Alert, Typography, Divider, message, Tooltip } from 'antd';
 import {
   CheckCircleOutlined, RocketOutlined, MessageOutlined, DatabaseOutlined,
   PictureOutlined, VideoCameraOutlined, AudioOutlined, RobotOutlined,
-  CopyOutlined, CheckOutlined, ApiOutlined, CodeOutlined, GlobalOutlined, SafetyOutlined
+  CopyOutlined, CheckOutlined, CodeOutlined, GlobalOutlined, SafetyOutlined
 } from '@ant-design/icons';
-import { ALL_MODEL_CATEGORIES, ALL_MODELS } from '../data/modelPricing';
+import { ALL_MODELS } from '../data/modelPricing';
 import type { ModelConfig } from '../data/modelPricing';
 
 const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
-const { Option } = Select;
+
+// English category labels for overseas users
+const ALL_MODEL_CATEGORIES_EN = [
+  { key: 'text', label: 'Text Generation', models: ALL_MODELS.filter(m => m.category === 'text') },
+  { key: 'embedding', label: 'Embeddings', models: ALL_MODELS.filter(m => m.category === 'embedding') },
+  { key: 'image', label: 'Image Generation', models: ALL_MODELS.filter(m => m.category === 'image') },
+  { key: 'video', label: 'Video Generation', models: ALL_MODELS.filter(m => m.category === 'video') },
+  { key: 'audio', label: 'Audio', models: ALL_MODELS.filter(m => m.category === 'audio') },
+  { key: 'agent', label: 'AI Agents', models: ALL_MODELS.filter(m => m.category === 'agent') },
+];
 
 const ModelSelectorEN: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('text');
@@ -24,15 +33,6 @@ const ModelSelectorEN: React.FC = () => {
     video: '#f5222d',
     audio: '#52c41a',
     agent: '#fa8c16',
-  };
-
-  const categoryIcons: Record<string, React.ReactNode> = {
-    text: <MessageOutlined />,
-    embedding: <DatabaseOutlined />,
-    image: <PictureOutlined />,
-    video: <VideoCameraOutlined />,
-    audio: <AudioOutlined />,
-    agent: <RobotOutlined />,
   };
 
   const handleCopy = (text: string) => {
@@ -50,14 +50,12 @@ const ModelSelectorEN: React.FC = () => {
     return (
       <Card
         hoverable
-       
         onClick={() => setSelectedModel(model.id)}
         style={{
           border: isSelected ? `2px solid ${color}` : '1px solid #f0f0f0',
           background: isSelected ? `${color}08` : '#fff',
           cursor: 'pointer',
           transition: 'all 0.3s',
-          opacity: isGeoRestricted ? 1 : undefined,
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
@@ -81,7 +79,7 @@ const ModelSelectorEN: React.FC = () => {
           {model.description}
         </Paragraph>
 
-        <Space wrap>
+        <Space size="small" wrap>
           {model.features.map((f, i) => (
             <Tag key={i} style={{ fontSize: 11 }}>{f}</Tag>
           ))}
@@ -101,7 +99,6 @@ const ModelSelectorEN: React.FC = () => {
 
   const currentModel = ALL_MODELS.find(m => m.id === selectedModel);
 
-  // 代码示例
   const codeExamples = {
     curl: `curl https://api.modeltop.ai/v1/chat/completions \\
   -H "Authorization: Bearer ***" \\
@@ -152,7 +149,6 @@ main();`,
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 16px' }}>
-      {/* 页面标题 */}
       <div style={{ textAlign: 'center', marginBottom: 40 }}>
         <Title level={2}>Model Selection & Integration</Title>
         <Paragraph type="secondary" style={{ fontSize: 16 }}>
@@ -161,7 +157,6 @@ main();`,
         <Tag color="blue" icon={<GlobalOutlined />}>Base URL: https://modeltop.ai/docs/</Tag>
       </div>
 
-      {/* 合规提示 */}
       <Alert
         message="Regional Compliance Notice"
         description={
@@ -175,7 +170,6 @@ main();`,
         style={{ marginBottom: 24, borderRadius: 12 }}
       />
 
-      {/* Seedance 2.0 海外专属亮点 */}
       <Alert
         message="🎬 Seedance 2.0 — Overseas Exclusive"
         description="Professional AI video generation available exclusively for overseas users. Multiple styles, character consistency, 4K output. China-based users restricted."
@@ -185,20 +179,17 @@ main();`,
       />
 
       <Row gutter={[24, 24]}>
-        {/* 左侧：模型选择 */}
         <Col xs={24} lg={14}>
           <Card title="Select Model" style={{ borderRadius: 16 }}>
             <Tabs
               activeKey={selectedCategory}
               onChange={setSelectedCategory}
               type="card"
-             
             >
-              {ALL_MODEL_CATEGORIES_EN.map(cat => (
+              {ALL_MODEL_CATEGORIES_EN.map((cat: any) => (
                 <TabPane
                   tab={
                     <Space>
-                      {null}
                       {cat.label}
                       <Tag color={categoryColors[cat.key]}>{cat.models.length}</Tag>
                     </Space>
@@ -206,7 +197,7 @@ main();`,
                   key={cat.key}
                 >
                   <Row gutter={[16, 16]}>
-                    {cat.models.map(model => (
+                    {cat.models.map((model: any) => (
                       <Col xs={24} sm={12} key={model.id}>
                         {renderModelCard(model)}
                       </Col>
@@ -217,36 +208,35 @@ main();`,
             </Tabs>
           </Card>
 
-          {/* 应用建议 */}
           <Card title="Use Case Recommendations" style={{ marginTop: 24, borderRadius: 16 }}>
             <Row gutter={[16, 16]}>
               <Col span={12}>
-                <Card title="Smart Customer Service" extra={<Tag color="blue">qwen-plus</Tag>}>
+                <Card size="small" title="Smart Customer Service" extra={<Tag color="blue">qwen-plus</Tag>}>
                   <Text type="secondary">Multi-turn dialogue, strong Chinese understanding, great value</Text>
                 </Card>
               </Col>
               <Col span={12}>
-                <Card title="Code Assistant" extra={<Tag color="purple">deepseek-v4</Tag>}>
+                <Card size="small" title="Code Assistant" extra={<Tag color="purple">deepseek-v4</Tag>}>
                   <Text type="secondary">Code generation, auto-completion, technical Q&A</Text>
                 </Card>
               </Col>
               <Col span={12}>
-                <Card title="Long Document Analysis" extra={<Tag color="red">qwen3.7-max</Tag>}>
+                <Card size="small" title="Long Document Analysis" extra={<Tag color="red">qwen3.7-max</Tag>}>
                   <Text type="secondary">1M context window for papers, contracts, reports</Text>
                 </Card>
               </Col>
               <Col span={12}>
-                <Card title="RAG Knowledge Base" extra={<Tag color="green">text-embedding</Tag>}>
+                <Card size="small" title="RAG Knowledge Base" extra={<Tag color="green">text-embedding</Tag>}>
                   <Text type="secondary">Semantic search, vector database, enterprise knowledge</Text>
                 </Card>
               </Col>
               <Col span={12}>
-                <Card title="AI Video Creation" extra={<Tag color="red">seedance-2.0</Tag>}>
+                <Card size="small" title="AI Video Creation" extra={<Tag color="red">seedance-2.0</Tag>}>
                   <Text type="secondary">Overseas exclusive. Professional video generation with multiple styles.</Text>
                 </Card>
               </Col>
               <Col span={12}>
-                <Card title="AI Image Generation" extra={<Tag color="magenta">qwen-image-2.0</Tag>}>
+                <Card size="small" title="AI Image Generation" extra={<Tag color="magenta">qwen-image-2.0</Tag>}>
                   <Text type="secondary">High-quality text-to-image generation</Text>
                 </Card>
               </Col>
@@ -254,7 +244,6 @@ main();`,
           </Card>
         </Col>
 
-        {/* 右侧：接入代码 */}
         <Col xs={24} lg={10}>
           <Card
             title={
@@ -292,7 +281,7 @@ main();`,
                   style={{ marginBottom: 16 }}
                 />
 
-                <Tabs defaultActiveKey="curl" type="card">
+                <Tabs defaultActiveKey="curl" type="card" size="small">
                   <TabPane tab="cURL" key="curl">
                     <div style={{ position: 'relative' }}>
                       <pre style={{
@@ -307,7 +296,7 @@ main();`,
                       </pre>
                       <Button
                         icon={copied ? <CheckOutlined /> : <CopyOutlined />}
-                       
+                        size="small"
                         style={{ position: 'absolute', top: 8, right: 8 }}
                         onClick={() => handleCopy(codeExamples.curl)}
                       />
@@ -327,7 +316,7 @@ main();`,
                       </pre>
                       <Button
                         icon={copied ? <CheckOutlined /> : <CopyOutlined />}
-                       
+                        size="small"
                         style={{ position: 'absolute', top: 8, right: 8 }}
                         onClick={() => handleCopy(codeExamples.python)}
                       />
@@ -347,7 +336,7 @@ main();`,
                       </pre>
                       <Button
                         icon={copied ? <CheckOutlined /> : <CopyOutlined />}
-                       
+                        size="small"
                         style={{ position: 'absolute', top: 8, right: 8 }}
                         onClick={() => handleCopy(codeExamples.javascript)}
                       />
