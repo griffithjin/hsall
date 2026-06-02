@@ -57,6 +57,7 @@ function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="api-keys" element={<AdminApiKeys />} />
           <Route path="channels" element={<AdminChannels />} />
+          <Route path="settings" element={<SystemConfig />} />
         </Route>
       </Routes>
     </Layout>
