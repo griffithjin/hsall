@@ -23,6 +23,8 @@ import AdminUsers from './pages/admin/Users';
 import AdminOrders from './pages/admin/Orders';
 import AdminApiKeys from './pages/admin/ApiKeys';
 import AdminChannels from './pages/admin/Channels';
+import ChannelDashboard from './pages/ChannelDashboard';
+import ChatPlayground from './pages/ChatPlayground';
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
         <Route path="/pay/result" element={<PaymentResultPage />} />
         <Route path="/login" element={<LoginPage />} />
         
+        <Route path="/chat" element={<ChatPlayground />} />
+        <Route path="/channel" element={<ChannelDashboard />} />
         {/* 用户中心 */}
         <Route path="/user" element={<UserLayout />}>
           <Route index element={<UserDashboard />} />
