@@ -26,6 +26,7 @@ import AdminChannels from './pages/admin/Channels';
 import SystemConfig from './pages/admin/SystemConfig';
 import ChannelDashboard from './pages/ChannelDashboard';
 import ChatPlayground from './pages/ChatPlayground';
+import ModelSelector from './pages/ModelSelector';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         
         <Route path="/chat" element={<ChatPlayground />} />
+        <Route path="/models" element={<ModelSelector />} />
         <Route path="/channel" element={<ChannelDashboard />} />
         {/* 用户中心 */}
         <Route path="/user" element={<UserLayout />}>
