@@ -203,12 +203,12 @@ const SystemConfigPage: React.FC = () => {
     },
     { title: '售价(输入/输出)', key: 'price',
       render: (_: any, record: ModelConfig) => (
-        <span>¥{(record.pricePer1KInput * 1000).toFixed(4)} / ¥{(record.pricePer1KOutput * 1000).toFixed(4)}</span>
+        <span>¥{(record.officialPricePer1KInput * 1000).toFixed(4)} / ¥{(record.officialPricePer1KOutput * 1000).toFixed(4)}</span>
       )
     },
     { title: '毛利率', key: 'margin',
       render: (_: any, record: ModelConfig) => {
-        const margin = ((record.pricePer1KInput - record.costPer1KInput) / record.pricePer1KInput * 100);
+        const margin = ((record.officialPricePer1KInput - record.costPer1KInput) / record.officialPricePer1KInput * 100);
         return <Tag color={margin > 40 ? 'success' : margin > 20 ? 'warning' : 'error'}>{margin.toFixed(1)}%</Tag>;
       }
     },
@@ -615,10 +615,10 @@ const SystemConfigPage: React.FC = () => {
               <InputNumber value={editingModel.costPer1KOutput} disabled style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item label="输入Token售价 (元/千)">
-              <InputNumber defaultValue={editingModel.pricePer1KInput} style={{ width: '100%' }} />
+              <InputNumber defaultValue={editingModel.officialPricePer1KInput} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item label="输出Token售价 (元/千)">
-              <InputNumber defaultValue={editingModel.pricePer1KOutput} style={{ width: '100%' }} />
+              <InputNumber defaultValue={editingModel.officialPricePer1KOutput} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item label="免费额度">
               <InputNumber defaultValue={editingModel.freeQuota || 0} style={{ width: '100%' }} suffix="Token" />

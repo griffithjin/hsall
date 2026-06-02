@@ -5,7 +5,7 @@ import {
   BarChartOutlined, GiftOutlined, ReloadOutlined, ArrowUpOutlined,
   CreditCardOutlined, SafetyOutlined
 } from '@ant-design/icons';
-import { ALL_MODELS, CREDIT_PACKAGES } from '../../data/modelPricing';
+import { ALL_MODELS, CREDIT_PACKAGES, calculateCredit } from '../../data/modelPricing';
 
 const UserDashboard: React.FC = () => {
   const [rechargeVisible, setRechargeVisible] = useState(false);
@@ -45,7 +45,7 @@ const UserDashboard: React.FC = () => {
     const pkg = CREDIT_PACKAGES.find(p => p.id === selectedPkg);
     if (pkg) {
       const orderUuid = 'ord_' + Math.random().toString(36).substr(2, 9);
-      window.location.href = `/#/pay/${orderUuid}?pkg=${pkg.id}&amount=${pkg.price}&credit=${pkg.creditAmount + pkg.bonusCredit}`;
+      window.location.href = `/#/pay/${orderUuid}?pkg=${pkg.id}&amount=${pkg.payAmount}&credit=${calculateCredit(pkg.payAmount, 0.82)}`;
     }
   };
 
@@ -286,10 +286,10 @@ const UserDashboard: React.FC = () => {
                   <div style={{ color: '#888', fontSize: 12, marginTop: 4 }}>{pkg.description}</div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 20, fontWeight: 'bold', color: '#1890ff' }}>¥{pkg.price}</div>
+                  <div style={{ fontSize: 20, fontWeight: 'bold', color: '#1890ff' }}>¥{pkg.payAmount}</div>
                   <div>
-                    <Tag color="success">得¥{pkg.creditAmount + pkg.bonusCredit}</Tag>
-                    {pkg.bonusCredit > 0 && <Tag color="warning">+{pkg.bonusCredit}赠送</Tag>}
+                    <Tag color="success">得¥{calculateCredit(pkg.payAmount, 0.82)}</Tag>
+                    
                   </div>
                 </div>
               </Radio.Button>

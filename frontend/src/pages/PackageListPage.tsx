@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Row, Col, Button, Tag, Badge, Tabs, Alert, Tooltip, Radio, Space, Statistic } from 'antd';
-import { CheckCircleOutlined, FireOutlined, CrownOutlined, ThunderboltOutlined, RocketOutlined, ShoppingCartOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { CREDIT_PACKAGES, MODEL_TIER_PACKAGES, ALL_MODELS } from '../data/modelPricing';
+import { CheckCircleOutlined, FireOutlined, CrownOutlined, ThunderboltOutlined, RocketOutlined, ShoppingCartOutlined, InfoCircleOutlined, TeamOutlined, GlobalOutlined } from '@ant-design/icons';
+import { CREDIT_PACKAGES, MODEL_TIER_PACKAGES, ALL_MODELS, DEFAULT_DISCOUNT_CONFIG, calculateCredit } from '../data/modelPricing';
 import type { PackageConfig } from '../data/modelPricing';
 
 const { TabPane } = Tabs;
@@ -10,10 +10,14 @@ const PackageListPage: React.FC = () => {
   const [billingMode, setBillingMode] = useState<'credit' | 'tier'>('credit');
   const [selectedTier, setSelectedTier] = useState<string>('flash-tier');
 
+  const discountRate = DEFAULT_DISCOUNT_CONFIG.currentDiscountRate;
+  const supplierRate = DEFAULT_DISCOUNT_CONFIG.supplierDiscountRate;
+  const marginRate = ((1 - supplierRate / discountRate) * 100).toFixed(1);
+
   const handlePurchase = (pkg: PackageConfig) => {
-    // 跳转支付页
+    const credit = calculateCredit(pkg.payAmount, discountRate);
     const orderUuid = 'ord_' + Math.random().toString(36).substr(2, 9);
-    window.location.href = `/#/pay/${orderUuid}?pkg=${pkg.id}&amount=${pkg.price}&credit=${pkg.creditAmount + pkg.bonusCredit}`;
+    window.location.href = `/#/pay/${orderUuid}?pkg=${pkg.id}&amount=${pkg.payAmount}&credit=${credit}`;
   };
 
   const handleTierPurchase = (tierId: string, pkgId: string, price: number, tokens: number) => {
@@ -21,102 +25,96 @@ const PackageListPage: React.FC = () => {
     window.location.href = `/#/pay/${orderUuid}?tier=${tierId}&pkg=${pkgId}&amount=${price}&tokens=${tokens}`;
   };
 
-  // 额度套餐渲染
-  const renderCreditPackages = () => (
-    <Row gutter={[24, 24]}>
-      {CREDIT_PACKAGES.map((pkg, index) => {
-        const icons = [ThunderboltOutlined, FireOutlined, RocketOutlined, CrownOutlined, RocketOutlined];
-        const colors = ['#52c41a', '#1890ff', '#722ed1', '#fa8c16', '#f5222d'];
-        const Icon = icons[index] || ShoppingCartOutlined;
-        const color = colors[index] || '#1890ff';
+  const renderCreditPackages = () => {
+    const analysis = CREDIT_PACKAGES.map(pkg => ({...pkg, credit: calculateCredit(pkg.payAmount, discountRate)}));
 
-        return (
-          <Col xs={24} sm={12} lg={8} key={pkg.id}>
-            <Card
-              hoverable
-              style={{
-                borderRadius: 16,
-                border: pkg.isPopular ? `2px solid ${color}` : '1px solid #f0f0f0',
-                boxShadow: pkg.isPopular ? `0 8px 24px ${color}20` : '0 2px 8px rgba(0,0,0,0.06)',
-                height: '100%',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-            >
-              {pkg.isPopular && (
-                <div style={{
-                  position: 'absolute', top: 0, right: 0,
-                  background: color, color: '#fff',
-                  padding: '4px 16px', borderRadius: '0 0 0 16px',
-                  fontSize: 12, fontWeight: 'bold'
-                }}>
-                  最受欢迎
-                </div>
-              )}
-              {pkg.isEnterprise && (
-                <div style={{
-                  position: 'absolute', top: 0, right: 0,
-                  background: '#f5222d', color: '#fff',
-                  padding: '4px 16px', borderRadius: '0 0 0 16px',
-                  fontSize: 12, fontWeight: 'bold'
-                }}>
-                  企业级
-                </div>
-              )}
+    return (
+      <Row gutter={[24, 24]}>
+        {analysis.map((pkg: any, index: number) => {
+          const icons = [ThunderboltOutlined, FireOutlined, RocketOutlined, CrownOutlined, RocketOutlined];
+          const colors = ['#52c41a', '#1890ff', '#722ed1', '#fa8c16', '#f5222d'];
+          const Icon = icons[index] || ShoppingCartOutlined;
+          const color = colors[index] || '#1890ff';
 
-              <div style={{ textAlign: 'center', marginBottom: 24 }}>
-                <Icon style={{ fontSize: 48, color, marginBottom: 12 }} />
-                <h3 style={{ margin: 0, fontSize: 22 }}>{pkg.name}</h3>
-                <p style={{ color: '#888', marginTop: 8, fontSize: 13 }}>{pkg.description}</p>
-              </div>
-
-              <div style={{ textAlign: 'center', marginBottom: 24 }}>
-                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 18, color: '#888' }}>¥</span>
-                  <span style={{ fontSize: 42, fontWeight: 'bold', color }}>{pkg.price}</span>
-                </div>
-                <div style={{ marginTop: 4 }}>
-                  <Tag color="success">获得 ¥{pkg.creditAmount + pkg.bonusCredit} 额度</Tag>
-                  {pkg.bonusCredit > 0 && (
-                    <Tag color="warning">+{pkg.bonusCredit} 赠送</Tag>
-                  )}
-                </div>
-                <div style={{ marginTop: 8, color: '#888', fontSize: 12 }}>
-                  相当于 {(pkg.price / (pkg.creditAmount + pkg.bonusCredit) * 100).toFixed(1)}% 折扣
-                </div>
-              </div>
-
-              <div style={{ marginBottom: 24 }}>
-                {pkg.features.map((feat, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: 14 }}>
-                    <CheckCircleOutlined style={{ color: '#52c41a' }} />
-                    <span>{feat}</span>
-                  </div>
-                ))}
-              </div>
-
-              <Button
-                type="primary"
-                size="large"
-                block
+          return (
+            <Col xs={24} sm={12} lg={8} key={pkg.id}>
+              <Card
+                hoverable
                 style={{
-                  borderRadius: 8,
-                  height: 44,
-                  background: color,
-                  borderColor: color
+                  borderRadius: 16,
+                  border: pkg.isPopular ? `2px solid ${color}` : '1px solid #f0f0f0',
+                  boxShadow: pkg.isPopular ? `0 8px 24px ${color}20` : '0 2px 8px rgba(0,0,0,0.06)',
+                  height: '100%',
+                  position: 'relative',
+                  overflow: 'hidden'
                 }}
-                onClick={() => handlePurchase(pkg)}
               >
-                立即购买
-              </Button>
-            </Card>
-          </Col>
-        );
-      })}
-    </Row>
-  );
+                {pkg.isPopular && (
+                  <div style={{
+                    position: 'absolute', top: 0, right: 0,
+                    background: color, color: '#fff',
+                    padding: '4px 16px', borderRadius: '0 0 0 16px',
+                    fontSize: 12, fontWeight: 'bold'
+                  }}>
+                    最受欢迎
+                  </div>
+                )}
+                {pkg.isEnterprise && (
+                  <div style={{
+                    position: 'absolute', top: 0, right: 0,
+                    background: '#f5222d', color: '#fff',
+                    padding: '4px 16px', borderRadius: '0 0 0 16px',
+                    fontSize: 12, fontWeight: 'bold'
+                  }}>
+                    企业级
+                  </div>
+                )}
 
-  // 模型分级套餐渲染
+                <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                  <Icon style={{ fontSize: 48, color, marginBottom: 12 }} />
+                  <h3 style={{ margin: 0, fontSize: 22 }}>{pkg.name}</h3>
+                  <p style={{ color: '#888', marginTop: 8, fontSize: 13 }}>{pkg.description}</p>
+                </div>
+
+                <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 18, color: '#888' }}>¥</span>
+                    <span style={{ fontSize: 42, fontWeight: 'bold', color }}>{pkg.payAmount}</span>
+                  </div>
+                  <div style={{ marginTop: 4 }}>
+                    <Tag color="success">获得 ¥{pkg.credit} 额度</Tag>
+                  </div>
+                  <div style={{ marginTop: 8, color: '#888', fontSize: 12 }}>
+                    折扣率: {(discountRate * 100).toFixed(0)}% = 支付¥{pkg.payAmount}得¥{pkg.credit}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 24 }}>
+                  {pkg.features.map((feat: string, i: number) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: 14 }}>
+                      <CheckCircleOutlined style={{ color: '#52c41a' }} />
+                      <span>{feat}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button
+                  type="primary"
+                  size="large"
+                  block
+                  style={{ borderRadius: 8, height: 44, background: color, borderColor: color }}
+                  onClick={() => handlePurchase(pkg as any)}
+                >
+                  立即购买
+                </Button>
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
+    );
+  };
+
   const renderTierPackages = () => {
     const currentTier = MODEL_TIER_PACKAGES.find(t => t.id === selectedTier);
     if (!currentTier) return null;
@@ -127,8 +125,6 @@ const PackageListPage: React.FC = () => {
       'max-tier': '#f5222d',
     };
     const color = tierColors[selectedTier] || '#1890ff';
-
-    // 该级别包含的模型
     const tierModels = ALL_MODELS.filter(m => currentTier.models.includes(m.id));
 
     return (
@@ -174,7 +170,7 @@ const PackageListPage: React.FC = () => {
                     </div>
                     <div style={{ marginTop: 8 }}>
                       <Tag color={color}>{(pkg.tokenAmount / 10000).toFixed(0)}万 Token</Tag>
-                      <Tag>¥{pkg.unitPrice.toFixed(2)}/百万Token</Tag>
+                      <Tag>¥{pkg.unitPrice.toFixed(2)}/百万Token (官方价)</Tag>
                     </div>
                   </div>
 
@@ -193,12 +189,7 @@ const PackageListPage: React.FC = () => {
                     type="primary"
                     size="large"
                     block
-                    style={{
-                      borderRadius: 8,
-                      height: 44,
-                      background: color,
-                      borderColor: color
-                    }}
+                    style={{ borderRadius: 8, height: 44, background: color, borderColor: color }}
                     onClick={() => handleTierPurchase(currentTier.id, pkg.id, pkg.price, pkg.tokenAmount)}
                   >
                     立即购买
@@ -214,18 +205,50 @@ const PackageListPage: React.FC = () => {
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 16px' }}>
-      {/* 页面标题 */}
       <div style={{ textAlign: 'center', marginBottom: 40 }}>
         <h1 style={{ fontSize: 36, marginBottom: 16 }}>选择您的套餐</h1>
-        <p style={{ fontSize: 16, color: '#666', maxWidth: 600, margin: '0 auto' }}>
-          基于阿里云百炼真实定价，确保每一分钱都物有所值。
-          <Tooltip title="我们直接对接阿里云百炼API，成本透明，定价合理，保证平台可持续运营">
+        <p style={{ fontSize: 16, color: '#666', maxWidth: 700, margin: '0 auto' }}>
+          <TeamOutlined style={{ marginRight: 8 }} />
+          拼车共享模式：用户越多，折扣越好，大家一起摊薄成本！
+          <Tooltip title="平台将规模效应带来的成本节省返利给用户，实现共赢">
             <InfoCircleOutlined style={{ marginLeft: 8, color: '#1890ff' }} />
           </Tooltip>
         </p>
       </div>
 
-      {/* 计费模式切换 */}
+      <Alert
+        message={
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+            <span>
+              <strong>当前折扣率: {(discountRate * 100).toFixed(0)}折</strong>
+              <span style={{ marginLeft: 16, color: '#888' }}>
+                充值¥100 = 可用额度¥{(calculateCredit(100, discountRate)).toFixed(2)}
+              </span>
+            </span>
+            <span style={{ color: '#52c41a' }}>
+              <GlobalOutlined style={{ marginRight: 4 }} />
+              平台利润率: {marginRate}%
+            </span>
+          </div>
+        }
+        description={
+          <div style={{ marginTop: 8 }}>
+            <p style={{ margin: 0 }}>
+              模型按 <strong>百炼官方原价</strong> 扣减额度，公开透明。
+              随着平台总消费增加，我们将从百炼获得更低折扣，并将节省的成本返利给您！
+            </p>
+            <div style={{ marginTop: 8, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <Tag color="blue">月消费≥30万 → 折扣再降2%</Tag>
+              <Tag color="blue">月消费≥50万 → 折扣再降5%</Tag>
+              <Tag color="blue">月消费≥100万 → 折扣再降10%</Tag>
+            </div>
+          </div>
+        }
+        type="info"
+        showIcon
+        style={{ marginBottom: 32, borderRadius: 12 }}
+      />
+
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
         <Radio.Group
           value={billingMode}
@@ -238,16 +261,15 @@ const PackageListPage: React.FC = () => {
         </Radio.Group>
       </div>
 
-      {/* 额度充值模式 */}
       {billingMode === 'credit' && (
         <>
           <Alert
             message="额度充值说明"
             description={
               <>
-                <p>1. 充值获得平台额度（1额度 = 1元人民币使用价值）</p>
+                <p>1. 充值获得平台额度（按官方原价扣减，公开透明）</p>
                 <p>2. 调用不同模型按实际消耗扣减额度（详见下方模型价格表）</p>
-                <p>3. 额度永久有效，充值越多折扣越大</p>
+                <p>3. 额度永久有效，充值越多折扣越大（拼车共享模式）</p>
                 <p>4. 新用户注册即送免费额度，无需充值即可体验</p>
               </>
             }
@@ -259,7 +281,6 @@ const PackageListPage: React.FC = () => {
         </>
       )}
 
-      {/* 模型分级套餐 */}
       {billingMode === 'tier' && (
         <>
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
@@ -271,8 +292,7 @@ const PackageListPage: React.FC = () => {
                     size="large"
                     onClick={() => setSelectedTier(tier.id)}
                     style={{
-                      borderRadius: 8,
-                      minWidth: 140,
+                      borderRadius: 8, minWidth: 140,
                       background: selectedTier === tier.id
                         ? (tier.tier === 'flash' ? '#52c41a' : tier.tier === 'plus' ? '#1890ff' : '#f5222d')
                         : undefined,
@@ -291,11 +311,16 @@ const PackageListPage: React.FC = () => {
         </>
       )}
 
-      {/* 模型价格参考表 */}
-      <Card title="模型价格参考表" style={{ marginTop: 48, borderRadius: 16 }}>
+      <Card title="模型价格参考表 (百炼官方原价)" style={{ marginTop: 48, borderRadius: 16 }}>
         <Alert
           message="价格说明"
-          description="以下价格为调用API时的扣减单价。实际成本基于阿里云百炼官方定价 × 目前科技折扣(最低68折) × 平台运营系数。我们保持约50%毛利以确保平台可持续服务。"
+          description={
+            <>
+              <p>以下价格为百炼官方原价，用户消费时按此价格扣减额度。</p>
+              <p>平台通过大规模采购获得折扣，并将节省的成本返利给用户。</p>
+              <p>当前平台折扣: <strong>{(discountRate * 100).toFixed(0)}折</strong>，即充值¥100 = 可用额度¥{calculateCredit(100, discountRate).toFixed(2)}</p>
+            </>
+          }
           type="info"
           showIcon
           style={{ marginBottom: 16 }}
@@ -310,6 +335,7 @@ const PackageListPage: React.FC = () => {
                     <span>{model.name}</span>
                     {model.isRecommended && <Tag color="success">推荐</Tag>}
                     {model.isNew && <Tag color="blue">NEW</Tag>}
+                    {model.geoRestriction === 'non-cn' && <Tag color="red">海外专属</Tag>}
                   </Space>
                 }
                 extra={<Tag>{model.contextLength}</Tag>}
@@ -318,13 +344,13 @@ const PackageListPage: React.FC = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                   <span>输入:</span>
                   <span style={{ fontWeight: 'bold', color: '#52c41a' }}>
-                    ¥{(model.pricePer1KInput * 1000).toFixed(3)}/百万Token
+                    ¥{(model.officialPricePer1KInput * 1000).toFixed(3)}/百万Token
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>输出:</span>
                   <span style={{ fontWeight: 'bold', color: '#1890ff' }}>
-                    ¥{(model.pricePer1KOutput * 1000).toFixed(3)}/百万Token
+                    ¥{(model.officialPricePer1KOutput * 1000).toFixed(3)}/百万Token
                   </span>
                 </div>
                 {model.freeQuota && model.freeQuota > 0 && (

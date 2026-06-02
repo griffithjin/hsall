@@ -85,7 +85,7 @@ const ModelSelector: React.FC = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
           <span>上下文: <Tag>{model.contextLength}</Tag></span>
           <span>
-            ¥{(model.pricePer1KInput * 1000).toFixed(3)} / ¥{(model.pricePer1KOutput * 1000).toFixed(3)} <Text type="secondary">每百万Token</Text>
+            ¥{(model.officialPricePer1KInput * 1000).toFixed(3)} / ¥{(model.officialPricePer1KOutput * 1000).toFixed(3)} <Text type="secondary">每百万Token</Text>
           </span>
         </div>
       </Card>
@@ -167,7 +167,7 @@ main();`,
                 <TabPane
                   tab={
                     <Space>
-                      {cat.icon}
+                      {null}
                       {cat.label}
                       <Tag color={categoryColors[cat.key]}>{cat.models.length}</Tag>
                     </Space>
@@ -237,8 +237,8 @@ main();`,
                   message={`已选择: ${currentModel.name}`}
                   description={
                     <>
-                      <div>输入: ¥{(currentModel.pricePer1KInput * 1000).toFixed(3)}/百万Token</div>
-                      <div>输出: ¥{(currentModel.pricePer1KOutput * 1000).toFixed(3)}/百万Token</div>
+                      <div>输入: ¥{(currentModel.officialPricePer1KInput * 1000).toFixed(3)}/百万Token</div>
+                      <div>输出: ¥{(currentModel.officialPricePer1KOutput * 1000).toFixed(3)}/百万Token</div>
                     </>
                   }
                   type="info"
